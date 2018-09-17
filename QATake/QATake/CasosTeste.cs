@@ -4,21 +4,25 @@ using OpenQA.Selenium.Chrome;
 using System.Threading;
 using System;
 using System.Linq;
+using QATake.PageObjects;
 
 namespace QATake
 {
     public class CasosTeste
     {
         private IWebDriver driver;
+        private ContactPage contato;
         private static int cont = 0;
 
-        [Fact]
-        public void Test1()
+        [Theory]
+        [InlineData("Patrick Reis","reis@gmail.com","QATake", "h3", "A mensagem foi enviada")]
+        public void TestesContato(string nome, string mail, string coment, string element, string mensage)
         {
             AbreNagevador();
-
-
-
+            contato = new ContactPage(driver);
+            contato.RealizaContato(nome, mail, coment);
+            Screenshot(driver, "RealizaContato");
+            contato.ValidaMsg(element, mensage);
             Fechar();
         }
 
@@ -38,7 +42,7 @@ namespace QATake
 
         public void Screenshot(IWebDriver driver, string nome)
         {
-            string screenshotsPasta = @"C:\Users\Patrick Reis\Documents\Git\Base2\Mantis\Mantis\Mantis\Screenshot\" + nome + "_" + cont++ + ".png";
+            string screenshotsPasta = @"C:\Users\Patrick Reis\Documents\Git\Take\Automacao-Take\QATake\QATake\Screenshot\" + nome + "_" + cont++ + ".png";
             ITakesScreenshot camera = driver as ITakesScreenshot;
             Screenshot foto = camera.GetScreenshot();
             foto.SaveAsFile(screenshotsPasta, ScreenshotImageFormat.Png);
